@@ -4,14 +4,26 @@
 
 
 
+# 📱 Echo – Blog Mobile App
 
----![echo3](https://github.com/user-attachments/assets/031cf1df-da19-44f0-9aee-5cc794886e49)
-![echo2](https://github.com/user-attachments/assets/ae23de95-7ba9-4e88-a89f-5bf4730a6554)
-![Echo1](https://github.com/user-attachments/assets/5f4771d2-8d57-4f3f-8347-40eb5879a13d)
-![echo7](https://github.com/user-attachments/assets/0513e4da-676e-44cc-a278-2121d1cb24bc)
-![echo6](https://github.com/user-attachments/assets/28bb06d0-1631-4e3d-883b-e0d010fc9a91)
-![echo5](https://github.com/user-attachments/assets/b06ca30e-e696-46ad-9e93-0356bca0c3fc)
-![echo4](https://github.com/user-attachments/assets/3ba23516-3d44-4568-b5ca-da0ef8bb755e)
+**Echo** is a modern mobile blogging application that allows users to create, explore, and engage with content seamlessly. Built with **React Native** and **Firebase**.
+
+---
+
+## 📸 App Preview
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/031cf1df-da19-44f0-9aee-5cc794886e49" width="250" />
+  <img src="https://github.com/user-attachments/assets/ae23de95-7ba9-4e88-a89f-5bf4730a6554" width="250" />
+  <img src="https://github.com/user-attachments/assets/5f4771d2-8d57-4f3f-8347-40eb5879a13d" width="250" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0513e4da-676e-44cc-a278-2121d1cb24bc" width="250" />
+  <img src="https://github.com/user-attachments/assets/28bb06d0-1631-4e3d-883b-e0d010fc9a91" width="250" />
+  <img src="https://github.com/user-attachments/assets/b06ca30e-e696-46ad-9e93-0356bca0c3fc" width="250" />
+  <img src="https://github.com/user-attachments/assets/3ba23516-3d44-4568-b5ca-da0ef8bb755e" width="250" />
+</p>
 
 
 ## 🚀 Features
