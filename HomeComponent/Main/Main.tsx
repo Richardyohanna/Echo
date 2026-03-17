@@ -13,6 +13,7 @@ import {
   getSavedPostIds,
 } from "../../services/postService";
 import { PostModel } from "../../Models/PostModel";
+import { formatTimeAgo } from "../../tools/timeFormat";
 
 type NavigationProp = NativeStackNavigationProp<RootHomeProp>;
 
@@ -124,7 +125,7 @@ const Main = () => {
           category_title={post.postTitle}
           content={post.postContent}
           post_user={post.author}
-          time_posted="Recent"
+          time_posted={post.createdAt ? formatTimeAgo(post.createdAt) : "Just now"}
           read_time="5 min"
           isSaved={savedPosts.includes(post.id!)}
           onTitlePressed={() => onTitlePressed(post.id!)}

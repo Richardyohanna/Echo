@@ -5,9 +5,11 @@ import { fontSizeType } from '../tools/textSet';
 const CreateAccountHeader = () => {
   return (
     <View style= {style.c_h}>
+     {/*
      <Pressable style = {{justifyContent: "center", alignItems: "center", padding: 5}}>
         <Image source = {require("../assets/CreateAccount/back.png")} />
      </Pressable>
+     */}
      <View style = {style.view_text}>
         <Text style = {style.text}>Join Echo</Text>
      </View>

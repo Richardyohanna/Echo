@@ -60,7 +60,7 @@ const CreatPost = () => {
   };
 
   const [coverImage, setCoverImage] = useState<any>(
-    require("../assets/Post/CreatePost/Cover Image Section.png")
+    require("../assets/Post/CreatePost/Cover Image Section.jpeg")
   );
 
   useEffect(() => {

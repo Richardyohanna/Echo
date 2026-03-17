@@ -8,8 +8,10 @@ import {
   Image,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { colorType } from "../tools/colorSet";
 import { fontSizeType } from "../tools/textSet";
 import { Row_and_Center } from "../tools/styles";
@@ -18,6 +20,20 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootHomeProp } from "../App";
 import { useNavigation } from "@react-navigation/native";
 import { loginUser } from "../services/authService";
+
+import {
+
+  resetPassword,
+  loginWithGoogle,
+  loginWithApple,
+} from "../services/authService";
+
+
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import * as AppleAuthentication from "expo-apple-authentication";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = () => {
   type NavigationProp = NativeStackNavigationProp<RootHomeProp, "Login">;
@@ -28,6 +44,44 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [secureText, setSecureText] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId: "1:480844890059:web:29877c7af9f1167d1b004e",
+    iosClientId: "YOUR_IOS_CLIENT_ID",
+    androidClientId: "YOUR_ANDROID_CLIENT_ID",
+  });
+
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { id_token } = response.params;
+
+      loginWithGoogle(id_token);
+
+      navigation.replace("HomePage", { screen: "Home" });
+    }
+  }, [response]);
+
+  // APPLE LOGIN
+  const handleAppleLogin = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+        ],
+      });
+
+      if (credential.identityToken) {
+        await loginWithApple(credential.identityToken);
+
+        navigation.replace("HomePage", { screen: "Home" });
+      }
+    } catch (error) {
+      console.log("Apple login error:", error);
+    }
+  };
+
 
   const login = async () => {
     if (!email.trim()) {
@@ -73,8 +127,36 @@ const LoginScreen = () => {
     navigation.navigate("CreateAccount");
   };
 
+
+  const handleForgotPassword = async () => {
+    if (!email.trim()) {
+      Alert.alert("Enter Email", "Please enter your email first.");
+      return;
+    }
+
+    try {
+      await resetPassword(email.trim());
+
+      Alert.alert(
+        "Password Reset",
+        "A reset email has been sent to your email."
+      );
+    } catch (error) {
+      Alert.alert("Error", "Could not send reset email.");
+    }
+  };
+
+
+
   return (
     <SafeAreaView style={style.l_bg}>
+     <KeyboardAvoidingView 
+           style ={{width: "100%", justifyContent: "center", alignItems: "center"}}
+           behavior={Platform.OS === "ios" ?  "padding" : "height"}
+           keyboardVerticalOffset={20}
+           >
+          
+          
       <View style={style.form}>
         <View
           style={{
@@ -147,6 +229,8 @@ const LoginScreen = () => {
                 fontWeight: "500",
                 color: "blue",
               }}
+
+              onPress={handleForgotPassword}
             >
               Forgot Password?
             </Text>
@@ -167,17 +251,17 @@ const LoginScreen = () => {
             />
 
             <Pressable onPress={() => setSecureText((prev) => !prev)}>
-              <Image source={require("../assets/CreateAccount/eye.png")} />
+              <Image source={secureText? require("../assets/CreateAccount/no-eye.png") : require("../assets/CreateAccount/eye.png")}  style={{height: 25, width: 25}}/>
             </Pressable>
           </View>
         </View>
 
-        <View style={[Row_and_Center.row_and_center, { gap: 10 }]}>
+      {/*   <View style={[Row_and_Center.row_and_center, { gap: 10 }]}>
           <Checkbox value={isChecked} onValueChange={setChecked} />
           <Text style={{ fontSize: fontSizeType.sm }}>
             Remember this device for 30 days
           </Text>
-        </View>
+        </View>  */}
 
         <Pressable
           style={[
@@ -214,9 +298,9 @@ const LoginScreen = () => {
           )}
         </Pressable>
 
-        <Image source={require("../assets/Divider.png")} />
+        
 
-        <View
+       {/* <Image source={require("../assets/Divider.png")} /> <View
           style={[
             Row_and_Center.row_and_center,
             { justifyContent: "space-between", width: "100%" },
@@ -234,6 +318,7 @@ const LoginScreen = () => {
                 height: 50,
               },
             ]}
+            onPress={() => promptAsync()}
           >
             <Image source={require("../assets/google.png")} />
             <Text
@@ -258,6 +343,8 @@ const LoginScreen = () => {
                 height: 50,
               },
             ]}
+
+            onPress={handleAppleLogin}
           >
             <Image source={require("../assets/apple.png")} />
             <Text
@@ -269,7 +356,7 @@ const LoginScreen = () => {
               Apple
             </Text>
           </Pressable>
-        </View>
+        </View> */}
 
         <Text
           style={{
@@ -288,6 +375,7 @@ const LoginScreen = () => {
           </Text>
         </Text>
       </View>
+       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -299,6 +387,8 @@ const style = StyleSheet.create({
     flex: 1,
     backgroundColor: colorType.primary,
     padding: 20,
+    justifyContent: "center",
+    alignItems: "center"
   },
   form: {
     backgroundColor: colorType.prePrimary,
@@ -314,9 +404,11 @@ const style = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 10,
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignItems: "flex-start",
     paddingTop: 20,
+    
+    width: "94%"
   },
   logo: {
     width: 50,

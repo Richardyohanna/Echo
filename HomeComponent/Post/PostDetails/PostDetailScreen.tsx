@@ -1,26 +1,30 @@
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, useWindowDimensions } from "react-native";
 import React, { useCallback, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import PostHeader from "./PostHeader";
 import { colorType } from "../../../tools/colorSet";
 import { fontSizeType } from "../../../tools/textSet";
 import PublisherDetail from "./PublisherDetail";
-import { RouteProp, useRoute, useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  RouteProp,
+  useRoute,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
 import { RootHomeProp } from "../../../App";
 import { getPostById } from "../../../services/postService";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { formatTimeAgo } from "../../../tools/timeFormat";
+import RenderHtml from "react-native-render-html";
 
 type PostDetailRouteProp = RouteProp<RootHomeProp, "PostDetail">;
 type NavigationProp = NativeStackNavigationProp<RootHomeProp>;
-
-const stripHtml = (html: string) => {
-  return html.replace(/<[^>]*>/g, " ");
-};
 
 const PostDetailScreen = () => {
   const route = useRoute<PostDetailRouteProp>();
   const navigation = useNavigation<NavigationProp>();
   const { postID } = route.params;
+  const { width } = useWindowDimensions();
 
   const [post, setPost] = useState<any>(null);
 
@@ -76,7 +80,7 @@ const PostDetailScreen = () => {
 
         <PublisherDetail
           postUser={post.author}
-          timePosted="Recent"
+          timePosted={post.createdAt ? formatTimeAgo(post.createdAt) : "Unknown"}
           readTime="5 min"
           profilePic={
             post.profilePicture
@@ -85,17 +89,61 @@ const PostDetailScreen = () => {
           }
         />
 
-        <Text
-          style={{
-            color: colorType.contentText,
-            fontSize: fontSizeType.sm,
-            marginLeft: 15,
-            marginRight: 15,
-            lineHeight: fontSizeType.sm + 10,
-          }}
-        >
-          {stripHtml(post.postContent)}
-        </Text>
+        <View style={style.htmlContainer}>
+          <RenderHtml
+            contentWidth={width - 30}
+            source={{ html: post.postContent || "<p>No content</p>" }}
+            tagsStyles={{
+              p: {
+                color: colorType.contentText,
+                fontSize: fontSizeType.sm,
+                lineHeight: fontSizeType.sm + 10,
+                marginBottom: 12,
+              },
+              strong: {
+                fontWeight: "bold",
+                color: colorType.hTextColor,
+              },
+              b: {
+                fontWeight: "bold",
+                color: colorType.hTextColor,
+              },
+              em: {
+                fontStyle: "italic",
+              },
+              i: {
+                fontStyle: "italic",
+              },
+              u: {
+                textDecorationLine: "underline",
+              },
+              h1: {
+                fontSize: fontSizeType["2xl"],
+                fontWeight: "800",
+                color: colorType.hTextColor,
+                marginBottom: 12,
+              },
+              h2: {
+                fontSize: fontSizeType.xl,
+                fontWeight: "700",
+                color: colorType.hTextColor,
+                marginBottom: 10,
+              },
+              ul: {
+                marginBottom: 12,
+              },
+              ol: {
+                marginBottom: 12,
+              },
+              li: {
+                color: colorType.contentText,
+                fontSize: fontSizeType.sm,
+                lineHeight: fontSizeType.sm + 10,
+                marginBottom: 6,
+              },
+            }}
+          />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -110,7 +158,6 @@ const style = StyleSheet.create({
     justifyContent: "flex-start",
     backgroundColor: colorType.prePrimary,
     gap: 15,
-    flex: 1,
   },
   after_image_button: {
     height: 24,
@@ -131,5 +178,11 @@ const style = StyleSheet.create({
     fontWeight: "800",
     marginLeft: 15,
     marginRight: 15,
+  },
+  htmlContainer: {
+    marginLeft: 15,
+    marginRight: 15,
+    width: "92%",
+    marginBottom: 30,
   },
 });

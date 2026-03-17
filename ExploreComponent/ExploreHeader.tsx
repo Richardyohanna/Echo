@@ -7,13 +7,17 @@ import { colorType } from '../tools/colorSet'
 const ExploreHeader = () => {
   return (
     <View style={[Row_and_Center.row_and_center, style.e_h]}>
-      <Pressable> 
+       {/*  Menu Button
+       <Pressable> 
         <Image source = {require("../assets/Explore/menu.png")} />
-      </Pressable>
+      </Pressable> */}
       <Text style = {style.text}>Explore</Text>
+
+      {/* Notification Button
+      
       <Pressable>
         <Image source = {require("../assets/Explore/notification.png")} />
-      </Pressable>
+      </Pressable> */}
     </View>
   )
 }
@@ -22,7 +26,7 @@ export default ExploreHeader;
 
 const style = StyleSheet.create({
     e_h : {
-        justifyContent: "space-between", 
+        justifyContent: "center", 
         width: "100%", 
         position: "absolute",
         marginTop: 40,

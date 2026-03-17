@@ -14,7 +14,7 @@ const PopularAurthor = ({ image, aurthor }: aurthorProp) => {
       <View style={style.justPostIndicator}>
         <Image
           source={image}
-          style={{ borderWidth: 1, borderColor: "white", borderRadius: 50 }}
+          style={{ borderWidth: 1, borderColor: "white", borderRadius: 50, width: 40, height: 40 }}
         />
       </View>
       <Text

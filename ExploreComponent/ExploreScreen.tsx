@@ -52,6 +52,30 @@ const ExploreScreen = () => {
   const [searchText, setSearchText] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
+  const featuredAuthors = useMemo(() => {
+      const uniqueAuthors = new Map();
+
+      posts.forEach((post) => {
+        if (!uniqueAuthors.has(post.author)) {
+          uniqueAuthors.set(post.author, {
+            id: post.authorId,
+            aurthor: post.author,
+            image: post.profilePicture
+              ? { uri: post.profilePicture }
+              : require("../assets/Explore/randomUser.png"),
+          });
+        }
+      });
+
+      const authorsArray = Array.from(uniqueAuthors.values());
+
+      // Shuffle authors randomly
+      authorsArray.sort(() => 0.5 - Math.random());
+
+      // Return only first 4
+      return authorsArray.slice(0, 4);
+    }, [posts]);
+
   const loadPosts = async () => {
     try {
       const data = await getPosts();
@@ -121,7 +145,7 @@ const ExploreScreen = () => {
           </View>
 
           <View style={style.allWriters}>
-            {featuredAurthor.map((item) => (
+            {featuredAuthors.map((item) => (
               <PopularAurthor
                 key={item.id}
                 aurthor={item.aurthor}
@@ -171,8 +195,10 @@ const style = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "rgba(148,6,249, 0.2)",
     height: 48,
-    width: "100%",
+    width: "96%",
     padding: 15,
+    borderWidth: 1,
+    borderColor: "rgba(50,50,50,0.3)",
   },
   heading: {
     fontSize: fontSizeType.lg,

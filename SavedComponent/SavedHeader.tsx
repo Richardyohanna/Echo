@@ -28,11 +28,15 @@ const SavedHeader = () => {
         */}      
         <Text style ={{fontSize: fontSizeType.lg, color: colorType.hTextColor, fontWeight: "bold", textAlign: "center", justifyContent: "flex-start"}}>Saved Posts</Text>
       </View>
+      {/*
+
+      Search and menu
       <View style={[ Row_and_Center.row_and_center, {gap: 25}]}>
          
          <Image source = {require("../assets/Saved/search.png")} />
          <Image source = {require("../assets/Saved/menu.png")} />
       </View>
+      */}
     </View>
   )
 }
@@ -45,7 +49,7 @@ const style = StyleSheet.create({
         width: "100%",
         height: 60,
         padding: 20,
-        justifyContent: "space-between",
+        justifyContent: "center",
         alignItems: "flex-start",
         gap: 10 ,  
         

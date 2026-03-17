@@ -8,6 +8,9 @@ import {
   Pressable,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback
 } from "react-native";
 import React, { useState } from "react";
 import CreateAccountHeader from "./CreateAccountHeader";
@@ -84,14 +87,21 @@ const CreateAccount = () => {
 
   return (
     <SafeAreaView style={style.c_ac_bg}>
-      <CreateAccountHeader />
+     {/*} <CreateAccountHeader /> */}
+      <KeyboardAvoidingView 
+        style ={style.scroll_style}
+        behavior={Platform.OS === "ios" ?  "padding" : "height"}
+        keyboardVerticalOffset={20}
+        >
+      
 
+      
       <ScrollView
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={style.scroll_style}
       >
-        <Image source={require("../assets/CreateAccount/Hero Section.png")} />
+        {/* <Image source={require("../assets/CreateAccount/Hero Section.png")} /> */}
 
         <Text
           style={{
@@ -161,7 +171,7 @@ const CreateAccount = () => {
             />
 
             <Pressable onPress={() => setSecureText((prev) => !prev)}>
-              <Image source={require("../assets/CreateAccount/eye.png")} />
+              <Image source={secureText? require("../assets/CreateAccount/no-eye.png") : require("../assets/CreateAccount/eye.png")}  style={{height: 25, width: 25}} />
             </Pressable>
           </View>
 
@@ -200,10 +210,23 @@ const CreateAccount = () => {
           </Pressable>
 
           <View style={[Row_and_Center.row_and_center, { marginTop: 20 }]}>
-            <Text style={{ textAlign: "center" }}> Already have an account? </Text>
-            <Pressable onPress={goToLogin}>
-              <Text style={{ color: "blue", textAlign: "center" }}>Log in</Text>
-            </Pressable>
+            <Text
+                style={{
+                  color: colorType.contentText,
+                  fontSize: fontSizeType.xs,
+                  textAlign: "center",
+                  width: "100%",
+                }}>
+                      Already have and account?{" "}
+                <Text
+                  style={{ textDecorationLine: "underline", color: "blue" }}
+                  onPress={goToLogin}
+                      >
+                        Login
+                      </Text>
+
+                    </Text>
+  
           </View>
 
           <Text
@@ -220,6 +243,7 @@ const CreateAccount = () => {
           </Text>
         </View>
       </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -228,7 +252,7 @@ export default CreateAccount;
 
 const style = StyleSheet.create({
   c_ac_bg: {
-    flex: 1,
+    
     backgroundColor: colorType.primary,
     paddingTop: 45,
     position: "relative",

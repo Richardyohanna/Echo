@@ -27,6 +27,7 @@ import { RootHomeProp } from "../App";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { DraftModel } from "../services/postService";
 import { PostModel } from "../Models/PostModel";
+import { logoutUser } from "../services/authService";
 
 type NavigationProp = NativeStackNavigationProp<RootHomeProp>;
 
@@ -135,6 +136,32 @@ const ProfileScreen = () => {
     }
   };
 
+  const handleLogout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await logoutUser();
+              navigation.replace("Login");
+            } catch (error) {
+              console.log("LOGOUT ERROR:", error);
+              Alert.alert("Error", "Failed to logout.");
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={style.p_bg}>
       <ProfileHeader />
@@ -144,7 +171,7 @@ const ProfileScreen = () => {
         contentContainerStyle={{ marginTop: 30, gap: 20, width: "100%" }}
       >
         <View style={style.profileTop}>
-          <Pressable onPress={handleChangeProfilePicture} style={style.profileImageWrapper}>
+          <View style={style.profileImageWrapper}>
             <Image
               source={
                 user?.photoURL
@@ -154,20 +181,30 @@ const ProfileScreen = () => {
               style={style.profileImage}
             />
 
-            <View style={style.profileOverlay}>
+             {/*} 
+                    Add this below the ActivityIndicator
+                    
+                <Image
+                  source={require("../assets/Profile/camera.png")}
+                  style={style.cameraIcon}
+                /> */}
+
+            <Pressable
+              onPress={handleChangeProfilePicture}
+              style={style.cameraButton}
+            >
               {profileLoading ? (
-                <ActivityIndicator color="#fff" />
+                <ActivityIndicator color="#fff" size="small" />
               ) : (
-                <Text style={style.profileOverlayText}>
-                  Click to change profile picture
-                </Text>
+
+                <Text> + </Text>
               )}
-            </View>
+            </Pressable>
 
             <View style={style.verifiedBadge}>
-              <Image source={require("../assets/Profile/verified.png")} />
+             {/* <Image source={require("../assets/Profile/verified.png")} /> */}
             </View>
-          </Pressable>
+          </View>
 
           <Text style={style.nameText}>
             {user?.displayName || "Echo User"}
@@ -179,8 +216,8 @@ const ProfileScreen = () => {
 
           <Text style={style.bioText}>Welcome to your profile page.</Text>
 
-          <Pressable style={style.editButton}>
-            <Text style={style.editButtonText}>Edit Profile</Text>
+          <Pressable style={style.logoutButton} onPress={handleLogout}>
+            <Text style={style.logoutButtonText}>Logout</Text>
           </Pressable>
         </View>
 
@@ -286,31 +323,35 @@ const style = StyleSheet.create({
     width: 130,
     height: 130,
     borderRadius: 65,
-    overflow: "hidden",
   },
   profileImage: {
     width: "100%",
     height: "100%",
     borderRadius: 65,
   },
-  profileOverlay: {
+  cameraButton: {
     position: "absolute",
-    inset: 0,
-    backgroundColor: "rgba(0,0,0,0.35)",
+    bottom: 0,
+    right: 0,
+    backgroundColor: colorType.buttonColor,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 10,
+    borderWidth: 3,
+    borderColor: "#fff",
   },
-  profileOverlayText: {
-    color: "#fff",
-    fontSize: 12,
-    textAlign: "center",
-    fontWeight: "600",
+  cameraIcon: {
+    width: 18,
+    height: 18,
+    tintColor: "#fff",
+    resizeMode: "contain",
   },
   verifiedBadge: {
     position: "absolute",
     bottom: 10,
-    right: 0,
+    right: 40,
     borderRadius: 50,
     borderWidth: 3,
     borderColor: "#fff",
@@ -330,18 +371,19 @@ const style = StyleSheet.create({
     color: colorType.contentText,
     textAlign: "center",
   },
-  editButton: {
+  logoutButton: {
     width: 142,
     height: 44,
     marginTop: 15,
-    backgroundColor: colorType.buttonColor,
+    backgroundColor: "#FF4D4D",
     borderRadius: 20,
-    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  editButtonText: {
+  logoutButtonText: {
     fontSize: fontSizeType.lg,
-    color: colorType.prePrimary,
-    textAlign: "center",
+    color: "#fff",
+    fontWeight: "600",
   },
   statsContainer: {
     width: "100%",
@@ -377,6 +419,7 @@ const style = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 20
   },
   emptyTitle: {
     fontSize: fontSizeType.lg,

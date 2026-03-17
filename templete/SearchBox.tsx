@@ -39,7 +39,9 @@ export default SearchBox;
 
 const style = StyleSheet.create({
   search_box: {
-    width: 358,
+    width: "96%",
+    borderWidth: 1,
+    borderColor: "rgba(50,50,50,0.3)",
     height: 48,
     borderRadius: 10,
     backgroundColor: colorType.prePrimary,

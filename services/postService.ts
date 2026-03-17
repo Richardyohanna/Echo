@@ -170,7 +170,7 @@ export const deleteDraft = async (draftId: string) => {
 };
 
 
-
+ /*
 export const updateUserProfilePictureEverywhere = async (photoURL: string) => {
   const user = auth.currentUser;
 
@@ -229,6 +229,77 @@ export const updateUserProfilePictureEverywhere = async (photoURL: string) => {
   // fallback for old drafts saved before authorId existed
   const draftsByAuthorNameQuery = query(draftCollection, where("author", "==", fallbackAuthorName));
   const draftsByAuthorNameSnapshot = await getDocs(draftsByAuthorNameQuery);
+
+  draftsByAuthorNameSnapshot.docs.forEach((item) => {
+    batch.update(item.ref, {
+      profilePicture: photoURL,
+      authorId: user.uid,
+    });
+  });
+
+  await batch.commit();
+}; */
+
+export const updateUserProfilePictureEverywhere = async (photoURL: string) => {
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("User not logged in");
+  }
+
+  // 1. Update Firebase Auth profile
+  await updateProfile(user, { photoURL });
+
+  // 2. Update user document
+  await setDoc(
+    doc(db, "users", user.uid),
+    {
+      uid: user.uid,
+      email: user.email,
+      fullName: user.displayName || "",
+      photoURL,
+      updatedAt: Date.now(),
+    },
+    { merge: true }
+  );
+
+  const batch = writeBatch(db);
+
+  // 3. Update posts using authorId
+  const postsByAuthorId = query(postCollection, where("authorId", "==", user.uid));
+  const postsSnapshot = await getDocs(postsByAuthorId);
+
+  postsSnapshot.docs.forEach((item) => {
+    batch.update(item.ref, {
+      profilePicture: photoURL,
+    });
+  });
+
+  // 4. Fallback for old posts that may not have authorId yet
+  const authorName = user.displayName || user.email || "Anonymous";
+  const postsByAuthorName = query(postCollection, where("author", "==", authorName));
+  const postsByAuthorNameSnapshot = await getDocs(postsByAuthorName);
+
+  postsByAuthorNameSnapshot.docs.forEach((item) => {
+    batch.update(item.ref, {
+      profilePicture: photoURL,
+      authorId: user.uid,
+    });
+  });
+
+  // 5. Update drafts using authorId
+  const draftsByAuthorId = query(draftCollection, where("authorId", "==", user.uid));
+  const draftsSnapshot = await getDocs(draftsByAuthorId);
+
+  draftsSnapshot.docs.forEach((item) => {
+    batch.update(item.ref, {
+      profilePicture: photoURL,
+    });
+  });
+
+  // 6. Fallback for old drafts
+  const draftsByAuthorName = query(draftCollection, where("author", "==", authorName));
+  const draftsByAuthorNameSnapshot = await getDocs(draftsByAuthorName);
 
   draftsByAuthorNameSnapshot.docs.forEach((item) => {
     batch.update(item.ref, {

@@ -36,7 +36,7 @@ const Header = () => {
       </View>
 
       <View style={[Row_and_Center.row_and_center, { gap: 15 }]}>
-        <Image source={require("../../assets/headerIcon/notification.png")} />
+       {/* <Image source={require("../../assets/headerIcon/notification.png")} /> */}
 
         <Pressable onPress={goToProfile}>
           <Image
@@ -58,6 +58,7 @@ const style = StyleSheet.create({
     h_bg : {
         flexDirection: "row",
         justifyContent: "space-between",
+        marginBottom: 15
         //borderWidth: 1,
        // borderColor: "rgba(148,6,249,0.3)",
     },
