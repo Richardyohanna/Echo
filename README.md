@@ -2,12 +2,6 @@
 
 **Echo** is a modern mobile blogging application that allows users to create, explore, and engage with content seamlessly. Built with **React Native** for the frontend and **Firebase** as the backend, Echo delivers a fast, real-time, and scalable experience for both writers and readers.
 
-
-
-# 📱 Echo – Blog Mobile App
-
-**Echo** is a modern mobile blogging application that allows users to create, explore, and engage with content seamlessly. Built with **React Native** and **Firebase**.
-
 ---
 
 ## 📸 App Preview
